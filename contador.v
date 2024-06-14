@@ -1,21 +1,21 @@
-module contador(clock,pre0,pre1,pre2,pre3,button,Q);
+module contador(clock,preset,button,Q);
  input clock,button;
- input pre0,pre1,pre2,pre3;
+ input [3:0]preset;
  output [3:0]Q;
  wire [3:0]resetin;
- wire [3:0] presetout,resetout,aux,bot;
+ wire [3:0] presetout,resetout,aux;
  wire sinal;
  or(botao,sinal,button);
  
- not(resetin[0],pre0);
- not(resetin[1],pre1);
- not(resetin[2],pre2);
- not(resetin[3],pre3);
+ not(resetin[0],preset[0]);
+ not(resetin[1],preset[1]);
+ not(resetin[2],preset[2]);
+ not(resetin[3],preset[3]);
  
- and(presetout[0], botao, pre0);
- and(presetout[1], botao, pre1);
- and(presetout[2], botao, pre2);
- and(presetout[3], botao, pre3);
+ and(presetout[0], botao, preset[0]);
+ and(presetout[1], botao, preset[1]);
+ and(presetout[2], botao, preset[2]);
+ and(presetout[3], botao, preset[3]);
  
  and(resetout[0], botao, resetin[0]);
  and(resetout[1], botao, resetin[1]);
@@ -38,19 +38,7 @@ module contador(clock,pre0,pre1,pre2,pre3,button,Q);
  
  // Abaixo, verifica qual contador está sendo rodado, e ao chegar em 0000 manda um pulso simulando o botão -
  // para pre-setar os valores novamente;
+ and(sinal,!Q[0],!Q[1],!Q[2],!Q[3]);
  
- // Contador 6 -> 0 ;
- and(bot[0],!Q[0],!Q[1],!Q[2],!Q[3],!pre0,pre1,pre2,!pre3);
- 
- // Contador 5 -> 0 ;
- and(bot[1],!Q[0],!Q[1],!Q[2],!Q[3],pre0,!pre1,pre2,!pre3);
- 
- // Contador 3 -> 0 ;
- and(bot[2],!Q[0],!Q[1],!Q[2],!Q[3],pre0,pre1,!pre2,!pre3);
- 
- // Contador 1 -> 0 ; 
- and(bot[3],!Q[0],!Q[1],!Q[2],!Q[3],pre0,!pre1,!pre2,!pre3);
- 
- or(sinal,bot[0],bot[1],bot[2],bot[3]);
  
 endmodule
